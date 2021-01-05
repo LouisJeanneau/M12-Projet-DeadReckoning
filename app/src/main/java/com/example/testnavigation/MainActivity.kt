@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     var fragCarte : Fragment? = null
     var fragCalib : Fragment? = null
 
-    var enregistrement : Boolean = true
+    var activee : Boolean = false
     var mapOrientation : LinkedHashMap<Long, Double> = LinkedHashMap(5000)
     var listPosition: ArrayList<LatLng> = ArrayList<LatLng>()
 
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(se: SensorEvent) {
         val currentFragment : Fragment? = supportFragmentManager.fragments.last()?.childFragmentManager?.fragments?.get(0)
 
-        if(se.sensor.type == Sensor.TYPE_STEP_DETECTOR){
+        if(se.sensor.type == Sensor.TYPE_STEP_DETECTOR && activee){
                 Log.i("Pas", "Pas détecté")
 
                 if(currentFragment == fragCarte){
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             val orientationTriple = FloatArray(3)
             val rotationMat = FloatArray(9)
 
-            if(se.sensor.type == Sensor.TYPE_ROTATION_VECTOR){
+            if(se.sensor.type == Sensor.TYPE_ROTATION_VECTOR && activee){
                 // Matrice d'orientation tridimensionnelle
                 SensorManager.getRotationMatrixFromVector(rotationMat, se.values)
                 // Orientation unidimensionnelle, plan du sol (autour de l'axe -Z)
