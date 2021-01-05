@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_calibration">
+
+    <fragment
+        android:id="@+id/navigation_calibration"
+        android:name="com.example.testnavigation.ui.calibration.CalibrationFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_calibration" />
+
+    <fragment
+        android:id="@+id/navigation_carte"
+        android:name="com.example.testnavigation.ui.carte.CarteFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_carte" />
+
+    <fragment
+        android:id="@+id/navigation_parametres"
+        android:name="com.example.testnavigation.ui.parametres.ParametresFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_parametres" />
+</navigation>

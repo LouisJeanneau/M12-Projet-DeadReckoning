@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestNavigation</string>
+    <string name="title_home">Calibration</string>
+    <string name="title_dashboard">Carte</string>
+    <string name="title_notifications">Parametres</string>
+    <string name="button">Permission "Activité"</string>
+</resources>
