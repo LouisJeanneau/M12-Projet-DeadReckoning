@@ -1,6 +1,7 @@
 package com.example.testnavigation.ui.calibration
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,6 +42,8 @@ class CalibrationFragment : Fragment() {
         affichageAzimuth.setText((activity as MainActivity).azimuthTrim.toString())
         calibManuelleTaille.setText((activity as MainActivity).taillePas.toString())
         calibManuelleAzimuth.setText((activity as MainActivity).azimuthTrim.toString())
+
+        (activity as MainActivity).demanderActualisationGPS()
 
         switch.setOnCheckedChangeListener { _, isChecked ->
             (activity as MainActivity).calibrageActif = isChecked

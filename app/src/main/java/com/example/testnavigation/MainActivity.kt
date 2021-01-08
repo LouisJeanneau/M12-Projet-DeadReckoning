@@ -261,10 +261,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     //Boucle de GPS
-    private fun demanderActualisationGPS() {
+    fun demanderActualisationGPS() {
         mLocationRequest = LocationRequest()
-        mLocationRequest!!.interval = 100 // two minute interval
-        mLocationRequest!!.fastestInterval = 50
+        mLocationRequest!!.interval = 500 // two minute interval
+        mLocationRequest!!.fastestInterval = 250
         mLocationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         if (ContextCompat.checkSelfPermission(
                         this,
@@ -283,10 +283,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     // Lors d'un nouveau pas ou d'une nouvelle position GPS, mise à jour des valeurs de calibration
     private fun miseAJourCalibration() {
         try {
-            if(fragmentActif == 2){
-                stopLocationUpdates()
-            }
-
             Log.i("Frag", fragmentActif.toString())
             if(fragmentActif == 1)
                 findViewById<TextView>(R.id.coordCourante).setText(positionCourante.latitude.toString() + " / " + positionCourante.longitude.toString())
