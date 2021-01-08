@@ -1,13 +1,16 @@
 package com.example.testnavigation.ui.carte
 
-import android.graphics.Color
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.testnavigation.MainActivity
 import com.example.testnavigation.R
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,24 +19,22 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
 
 
-class CarteFragment : Fragment() {
+class CarteFragment : Fragment(), GoogleMap.OnMapClickListener {
     // Esthetique
     private val tailleCercle: Double = 0.4
-    val colorPointDepart = Color.parseColor("#8a8a8a")
-    val colorPointInter = Color.parseColor("#4eaacf")
-    val colorPointDernier = Color.parseColor("#36c794")
-    val colorPointClick = Color.parseColor("#8f56d1")
 
     // Ref de la map
-    var handleMap : GoogleMap? = null
+    private var handleMap : GoogleMap? = null
 
     // Liste de cercle
-    val listCircle = mutableListOf<Circle>()
+    private val listCercle = mutableListOf<Circle>()
 
     //private lateinit var carteViewModel: CarteViewModel
 
+    @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -45,33 +46,101 @@ class CarteFragment : Fragment() {
          * user has installed Google Play services and returned to the app.
          */
         handleMap = googleMap
-        //on ajoute un marqueur dans le coin de PG1
-        //map.addMarker(new MarkerOptions().position(Depart_PG).title("Marker_PG"));
-        //on centre la cam sur le marqueur et on zoome
+
+        /*
         googleMap.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
-                (activity as MainActivity).listPosition.first(),
-                95f
+                (activity as MainActivity).listPosition.first(), 95f
             )
         )
+         */
+
+        //Montre le point GPS de l'utilisateur ou rappelle d'accorder la permission
+        if (ActivityCompat.checkSelfPermission(
+                (activity as MainActivity),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                (activity as MainActivity),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(
+                requireActivity().applicationContext,
+                "Veuillez accordez la permission GPS dans les paramètres",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        else{
+            googleMap.isMyLocationEnabled = true
+        }
+
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(150f))
+        try{
+            val temp = (activity as MainActivity).positionCourante
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(temp.latitude, temp.longitude)))
+        }catch (e: Exception){
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(49.41130417614944, 2.8305347697658036)))
+        }
+
+        googleMap.setIndoorEnabled(true)
+        googleMap.setOnMapClickListener{
+            validerPositionInitiale(it)
+            (activity as MainActivity).etatInit = true
+            miseAJourBouton()
+        }
+        //Si il y a eu changement de fragment, cela remet les points du parcours
         initAffichage()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         //carteViewModel = ViewModelProvider(this).get(CarteViewModel::class.java)
-        (activity as MainActivity).updateFragCarte(this)
+
 
         val root = inflater.inflate(R.layout.fragment_carte, container, false)
-
-        //val buttonStart : Button = requireView().findViewById(R.id.buttonStart)
-
         return root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        (activity as MainActivity).updateFragCarte(this)
+        (activity as MainActivity).updateFragmentActif(2)
+
+
+        // Bouton start non clickable tant qu'on a pas une pos initiale
+        val buttonStart : Button = requireView().findViewById(R.id.buttonStart)
+        val buttonStop : Button = requireView().findViewById(R.id.buttonStop)
+        val buttonPosInit : Button = requireView().findViewById(R.id.buttonValiderPosDepart)
+        //
+        miseAJourBouton()
+
+
+        buttonPosInit.setOnClickListener {
+            (activity as MainActivity).fusedLocationClient.lastLocation.addOnCompleteListener {
+                taskLocation ->
+                if (taskLocation.isSuccessful && taskLocation.result != null) {
+                    var location = taskLocation.result
+                    validerPositionInitiale((LatLng(location.latitude, location.longitude)))
+                }
+            }
+            (activity as MainActivity).etatInit = true
+            miseAJourBouton()
+        }
+        buttonStart.setOnClickListener{
+            (activity as MainActivity).etatActivee = true
+            miseAJourBouton()
+        }
+
+        buttonStop.setOnClickListener {
+            (activity as MainActivity).etatActivee = false
+            miseAJourBouton()
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -79,24 +148,41 @@ class CarteFragment : Fragment() {
         initAffichage()
     }
 
-    fun initAffichage(){
+    private fun miseAJourBouton(){
+        val init = (activity as MainActivity).etatInit
+        val activee = (activity as MainActivity).etatActivee
+        val buttonStart : Button = requireView().findViewById(R.id.buttonStart)
+        val buttonStop : Button = requireView().findViewById(R.id.buttonStop)
+        val buttonPosInit : Button = requireView().findViewById(R.id.buttonValiderPosDepart)
+        //
+        if(activee){
+            buttonStop.setBackgroundColor(resources.getColor(R.color.primaryColor))
+            buttonStart.setBackgroundColor(resources.getColor(R.color.gris))
+        }
+        else{
+            if(init){
+                buttonStart.setBackgroundColor(resources.getColor(R.color.primaryColor))
+            }
+            else{
+                buttonStart.setBackgroundColor(resources.getColor(R.color.gris))
+            }
+            buttonStop.setBackgroundColor(resources.getColor(R.color.gris))
+        }
+
+    }
+
+    private fun initAffichage(){
         for (position in (activity as MainActivity).listPosition){
-            var circleOptions : CircleOptions = CircleOptions().center(position).fillColor(
-                colorPointInter
-            ).strokeWidth(0f).radius(tailleCercle)
+            var circleOptions : CircleOptions = CircleOptions().center(position).fillColor(R.color.pointInter).strokeWidth(0f).radius(tailleCercle)
             if(position == (activity as MainActivity).listPosition.first()){
-                circleOptions = CircleOptions().center(position).fillColor(colorPointDepart).strokeWidth(
-                    0f
-                ).radius(tailleCercle)
+                circleOptions = CircleOptions().center(position).fillColor(R.color.pointDepart).strokeWidth(0f).radius(tailleCercle)
             }
             else if(position == (activity as MainActivity).listPosition.last()){
-                circleOptions = CircleOptions().center(position).fillColor(colorPointDernier).strokeWidth(
-                    0f
-                ).radius(tailleCercle)
+                circleOptions = CircleOptions().center(position).fillColor(R.color.pointDernier).strokeWidth(0f).radius(tailleCercle)
             }
             try {
                 val circle: Circle = handleMap!!.addCircle(circleOptions)
-                listCircle.add(circle)
+                listCercle.add(circle)
             } catch (e: Exception) {
 
             }
@@ -104,14 +190,34 @@ class CarteFragment : Fragment() {
     }
 
 
-    fun miseAJourAffichage(){
+    fun actualiserAffichage(){
         val position = (activity as MainActivity).listPosition.last()
-        var circleOptions = CircleOptions().center(position).fillColor(colorPointDernier).strokeWidth(
+        var circleOptions = CircleOptions().center(position).fillColor(R.color.pointDernier).strokeWidth(
             0f
         ).radius(tailleCercle)
         val circle: Circle = handleMap!!.addCircle(circleOptions)
         if(position != (activity as MainActivity).listPosition.first())
-            listCircle.last().setFillColor(colorPointInter)
-        listCircle.add(circle)
+            listCercle.last().setFillColor(R.color.pointInter)
+        listCercle.add(circle)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun validerPositionInitiale(position : LatLng){
+        if((activity as MainActivity).etatActivee == false){
+        (activity as MainActivity).etatInit = true
+        (activity as MainActivity).listPosition.clear()
+        (activity as MainActivity).listPosition.add(position)
+        for(circle in listCercle){
+            circle.remove()
+        }
+        listCercle.clear()
+        initAffichage()
+        }
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        if (p0 != null) {
+            validerPositionInitiale(p0)
+        }
     }
 }

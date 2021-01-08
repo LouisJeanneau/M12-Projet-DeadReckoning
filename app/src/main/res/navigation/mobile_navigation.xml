@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_calibration"
         android:name="com.example.testnavigation.ui.calibration.CalibrationFragment"
-        android:label="@string/title_home"
+        android:label="@string/nom_calibration"
         tools:layout="@layout/fragment_calibration" />
 
     <fragment
         android:id="@+id/navigation_carte"
         android:name="com.example.testnavigation.ui.carte.CarteFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/nom_carte"
         tools:layout="@layout/fragment_carte" />
 
     <fragment
         android:id="@+id/navigation_parametres"
         android:name="com.example.testnavigation.ui.parametres.ParametresFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/nom_parametres"
         tools:layout="@layout/fragment_parametres" />
 </navigation>

@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">TestNavigation</string>
-    <string name="title_home">Calibration</string>
-    <string name="title_dashboard">Carte</string>
-    <string name="title_notifications">Parametres</string>
-    <string name="button">Permission "Activité"</string>
+    <string name="nom_calibration">Calibration</string>
+    <string name="nom_carte">Carte</string>
+    <string name="nom_parametres">Parametres</string>
+    <string name="button">Permission Capteurs</string>
+    <string name="buttonGPS">PERMISSION GPS</string>
+    <string name="primary_color">Primary color</string>
+    <string name="secondary_color">Secondary color</string>
+    <string name="email_icon">email icon</string>
 </resources>

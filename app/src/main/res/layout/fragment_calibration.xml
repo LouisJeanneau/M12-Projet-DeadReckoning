@@ -7,17 +7,186 @@
     android:layout_height="match_parent"
     tools:context=".ui.calibration.CalibrationFragment">
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nomOngletCalibration"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="10dp"
+        android:text="Calibration GPS"
         android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchCalibration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:minWidth="100dp"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:text="Activé"
+        android:textAppearance="@style/CustomText"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nomOngletCalibration" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textePas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Nombre de pas :"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2.bis"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchCalibration" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nbrPas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90dp"
+        android:text="0"
+        android:textAppearance="@style/CustomText"
+        app:layout_constraintStart_toEndOf="@+id/textePas"
+        app:layout_constraintTop_toTopOf="@+id/textePas" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/texteDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Distance (en m) :"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2.bis"
+        app:layout_constraintStart_toStartOf="@+id/textePas"
+        app:layout_constraintTop_toBottomOf="@+id/textePas" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="@style/CustomText"
+        app:layout_constraintStart_toStartOf="@+id/nbrPas"
+        app:layout_constraintTop_toTopOf="@+id/texteDistance" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/texteTaillePas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Taille d'un pas (en m) :"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2.bis"
+        app:layout_constraintStart_toStartOf="@+id/textePas"
+        app:layout_constraintTop_toBottomOf="@+id/texteDistance" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nbrTaillePas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="@style/CustomText"
+        app:layout_constraintStart_toStartOf="@+id/distance"
+        app:layout_constraintTop_toTopOf="@+id/texteTaillePas" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/trimAzimuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Trim d'azimuth (en rad) :"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2.bis"
+        app:layout_constraintStart_toStartOf="@+id/textePas"
+        app:layout_constraintTop_toBottomOf="@+id/texteTaillePas" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nbrAzimuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAppearance="@style/CustomText"
+        app:layout_constraintStart_toStartOf="@+id/distance"
+        app:layout_constraintTop_toTopOf="@+id/trimAzimuth" />
+
+    <TextView
+        android:id="@+id/coordActuelle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:text="Coord actuelle :"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trimAzimuth" />
+
+    <TextView
+        android:id="@+id/coordCourante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="168dp"
+        android:layout_marginEnd="168dp"
+        android:text="En cours..."
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coordActuelle" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/calibrationManuelle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Calibration Manuelle"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coordCourante" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calibrationManuelle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:imeOptions="actionDone"
+            android:id="@+id/calibManuelleTaillePas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Taille d'un pas en mètre"
+            android:inputType="numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/calibManuelleAzimuth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correctif d'azimuthen rad"
+            android:imeOptions="actionDone"
+            android:inputType="numberSigned|numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
